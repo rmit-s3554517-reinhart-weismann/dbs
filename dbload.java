@@ -44,16 +44,33 @@ public class dbload {
             read = new BufferedReader(new FileReader(path));
             line = read.readLine();
             rec.setColumn(line);
-            //get the longest and use the max length of the record size
+            //get the longest length of the record size
             //so that it could accommodate all the records
             while((line = read.readLine()) != null)
             {
-                
+                if (line.length() > temp)
+                {
+                    temp = line.length();
+                    maxStr = line;
+                }
             }
+            rec.setRecordSize(maxStr.getBytes().length);
+            rec.setRecordLength(maxStr.length());
         }
         catch(IOException e)
         {
             e.printStackTrace();
+        }
+        finally
+        {
+            try 
+            {
+                read.close();
+            } 
+            catch (IOException e) 
+            {
+                e.printStackTrace();
+            }
         }
         return rec;
     }

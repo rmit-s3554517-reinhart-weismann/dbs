@@ -6,7 +6,7 @@ public class dbload {
     public static void main(String[] args) 
     {
         File file;
-        int pagesize;
+        int pagesize, datasize;
         dbload dbl;
         String path;
         
@@ -27,18 +27,47 @@ public class dbload {
         dbl = new dbload();
         pagesize = Integer.parseInt(args[1]);
         path = args[2];
+        datasize = pagesize - 4;
+        //4 is the length of the data counter
         
     }
     
-    private void loadData(int pagesize, String path)
+    private Record initialiseRecord(String path)
+    {
+        Record rec = new Record();
+        String line, maxStr = "";
+        BufferedReader read = null;
+        int temp = 0;
+        //read the data
+        try
+        {
+            read = new BufferedReader(new FileReader(path));
+            line = read.readLine();
+            rec.setColumn(line);
+            //get the longest and use the max length of the record size
+            //so that it could accommodate all the records
+            while((line = read.readLine()) != null)
+            {
+                
+            }
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return rec;
+    }
+    
+    private void loadData(int pagesize, int datasize, String path)
     {
         DataOutputStream out = null;
         BufferedReader read = null;
         String line;
-        int count = 0, pageCount = 0, totalCount;
+        StringBuilder page = new StringBuilder();
+        int count = 0, pageCount = 0, totalCount = 0;
         ArrayList<String> pageData = new ArrayList<String>();
-        byte[] pageByte = new byte[pagesize];
-        
+        byte[] pageByte = new byte[datasize];
+        //create file
         try
         {
             read = new BufferedReader(new FileReader(path));
@@ -48,6 +77,8 @@ public class dbload {
             //convert the line length and line into bytes
             out.writeInt(line.getBytes().length);
             out.writeBytes(line);
+            
+            
         }
         catch(IOException e)
         {

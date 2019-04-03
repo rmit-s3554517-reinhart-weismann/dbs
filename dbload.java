@@ -9,6 +9,7 @@ public class dbload {
         int pagesize, datasize;
         dbload dbl;
         String path;
+        Record record;
         
         //if argument is wrong
         if(!args[0].equals("-p") || args.length != 3)
@@ -18,7 +19,8 @@ public class dbload {
         }
         
         file = new File(args[2]);
-        if(!file.exists()) //if file is missing
+        //if file is missing
+        if(!file.exists())
         {
             System.out.println("file does not exist");
             return;
@@ -27,9 +29,11 @@ public class dbload {
         dbl = new dbload();
         pagesize = Integer.parseInt(args[1]);
         path = args[2];
-        datasize = pagesize - 4;
+        record = dbl.initialiseRecord(path);
         //4 is the length of the data counter
+        datasize = pagesize - 4;
         
+        dbl.loadData(pagesize, datasize, path, record);
     }
     
     private Record initialiseRecord(String path)
@@ -131,11 +135,43 @@ public class dbload {
                     out.flush();
                     page.setLength(0);
                 }
+                
+            }
+            //if there is still space in the page
+            if(count > 0)
+            {
+                pageCount++;
+                System.out.println("write page no. " + pageCount);
+                out.writeInt(count);
+                count = 0; //reset counter
+                Arrays.fill(pageByte, (byte)'0');
+                pageByteData = page.toString().getBytes();
+                
+                for(int i = 0; i < pageByteData.length; i++)
+                {
+                    pageByte[i] = pageByteData[i];
+                }
+                out.writeBytes(new String(pageByte));
+                out.flush();
+                pageData.clear();
             }
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
+        finally
+        {
+            try
+            {
+                read.close();
+                out.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Insert finished");
     }
 }

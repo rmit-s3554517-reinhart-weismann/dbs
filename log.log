@@ -1,0 +1,7 @@
+* de3686e : finished dbload
+* 148cf92 : added a method for filling the page
+* 4e5bd51 : finished initialise method
+* 43bd19e : partially written initialise method
+* 538b88d : added a record object
+* 644b134 : forgot to commit
+* a117ff9 : Initial commit

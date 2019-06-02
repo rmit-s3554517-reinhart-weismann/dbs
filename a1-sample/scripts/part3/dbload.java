@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import java.nio.ByteBuffer;
+import BPlusTree;
 
 /**
  *  Database Systems - HEAP IMPLEMENTATION
@@ -12,12 +13,14 @@ public class dbload implements dbimpl
    public static void main(String args[])
    {
       dbload load = new dbload();
-
-      // calculate load time
+	  BPlusTree bpt;
+      
+	  // calculate load time
       long startTime = System.currentTimeMillis();
       load.readArguments(args);
       long endTime = System.currentTimeMillis();
 
+	  BPlusTree bpt = BPlusTree.getInstance();
       System.out.println("Load time: " + (endTime - startTime) + "ms");
    }
 
@@ -164,6 +167,33 @@ public class dbload implements dbimpl
 
       return rec;
    }
+   
+   public byte[] createRecord(byte[] rec, String[] entry, int out)
+          throws UnsupportedEncodingException 
+   {
+      byte[] RID = intToByteArray(out);
+      System.arraycopy(RID, 0, rec, 0, RID.length);
+	  
+	
+      copy(entry[0], DEVICE_ID_SIZE, RID_SIZE, rec);
+      copy(entry[1], ARRIVAL_TIME_SIZE, ARRIVAL_TIME_OFFSET, rec);
+      copy(entry[2], DEPART_TIME_SIZE, DEPART_TIME_OFFSET, rec);
+      copy(entry[3], DURATION_SIZE, DURATION_OFFSET, rec);
+      copy(entry[4], STREET_MARKER_SIZE, STREET_MARKER_OFFSET, rec);
+      copy(entry[5], SIGN_SIZE, SIGN_OFFSET, rec);
+      copy(entry[6], AREA_SIZE, AREA_OFFSET, rec);
+      copy(entry[7], STREET_ID_SIZE, STREET_ID_OFFSET, rec);
+      copy(entry[8], STREET_NAME_SIZE, STREET_NAME_OFFSET, rec);
+      copy(entry[9], BETWEEN_STREET_1_SIZE, BETWEEN_STREET_1_OFFSET, rec);
+      copy(entry[10], BETWEEN_STREET_2_SIZE, BETWEEN_STREET_2_OFFSET, rec);
+      copy(entry[11], SIDE_OF_STREET_SIZE, SIDE_OF_STREET_OFFSET, rec);
+      copy(entry[12], VIOLATION_SIZE, VIOLATION_OFFSET, rec);
+      copy(entry[13], PRESENT_SIZE, PRESENT_OFFSET, rec);
+
+      return rec;
+   }
+   
+   
 
    // EOF padding to fill up remaining pagesize
    // * minus 4 bytes to add page number at end of file
